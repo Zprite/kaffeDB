@@ -50,7 +50,7 @@ CREATE TABLE Kaffeparti (
     ForedlingsmetodeNavn VARCHAR(30) NOT NULL,
     CONSTRAINT Kaffeparti_PK PRIMARY KEY (ID),
     CONSTRAINT Kaffeparti_FK1 FOREIGN KEY (GårdID) REFERENCES Gård(ID),
-    CONSTRAINT Kafeparti_FK2 FOREIGN KEY (ForedlingsmetodeNavn) REFERENCES Foredlingsmetode(Navn),
+    CONSTRAINT Kafeparti_FK2 FOREIGN KEY (ForedlingsmetodeNavn) REFERENCES Foredlingsmetode(Navn)
 );
 
 CREATE TABLE Foredlingsmetode (
@@ -78,11 +78,10 @@ CREATE TABLE DyrketKaffebønne (
     Art VARCHAR(30) NOT NULL,
     GårdID INTEGER NOT NULL,
     KaffepartiID INTEGER NOT NULL,
-    KaffebønneArt VARCHAR(30) NOT NULL,
     CONSTRAINT DyrketKaffebønne_PK PRIMARY KEY (Art, GårdID, KaffepartiID),
-    CONSTRAINT DyrketKaffebønne_FK1 FOREIGN KEY (GårdID) REFERENCES Gård(ID)
-    CONSTRAINT DyrketKaffebønne_FK2 FOREIGN KEY (KaffepartiID) REFERENCES Kaffeparti(ID)
-    CONSTRAINT DyrketKaffebønne_FK3 FOREIGN KEY (KaffebønneArt) REFERENCES Kaffebønne(Art)
+    CONSTRAINT DyrketKaffebønne_FK1 FOREIGN KEY (Art) REFERENCES Kaffebønne(Art)
+    CONSTRAINT DyrketKaffebønne_FK2 FOREIGN KEY (GårdID) REFERENCES Gård(ID)
+    CONSTRAINT DyrketKaffebønne_FK3 FOREIGN KEY (KaffepartiID) REFERENCES Kaffeparti(ID)
 );
 
 /*Brukerhistorie 1*/
@@ -101,3 +100,16 @@ Values ("Nombre de Dios", 1500, "Santa Ana", "El Salvador");
 
 INSERT INTO Kaffeparti(Innhøstingsår, Betalt, GårdID, ForedlingsmetodeNavn)
 VALUES (2021, 8, (SELECT ID from Gård WHERE Navn='Nombre de Dios') , "Bærtørket");
+
+INSERT INTO DyrketKaffebønne (Art, GårdID, KaffepartiID)
+VALUES ("Coffea Arabica",
+(SELECT ID from Gård WHERE Navn='Nombre de Dios'),
+(SELECT ID from Kaffeparti  WHERE (Innhøstingsår=2021 and Betalt=8)));
+
+INSERT INTO Kaffebrenneri(Navn, Lokasjon)
+VALUES ("Jacobsen & Svart", "Trondheim");
+
+INSERT INTO FerdigbrentKaffe(Navn, Dato, Beskrivelse, Brenningsgrad, Kilopris, KaffepartiID, KaffebrenneriID)
+VALUES ("Vinterkaffe 2022", "2022-01-20", "En velsmakende og kompleks kaffe for mørketiden", "Lys", 600, 
+(SELECT ID from Kaffeparti WHERE (Innhøstingsår=2021 and Betalt=8)),
+(SELECT ID from Kaffebrenneri WHERE (Navn="Jacobsen & Svart" and Lokasjon="Trondheim")));
