@@ -48,11 +48,9 @@ CREATE TABLE Kaffeparti (
     Betalt FLOAT(24),
     GårdID INTEGER NOT NULL,
     ForedlingsmetodeNavn VARCHAR(30) NOT NULL,
-    KaffebønneArt VARCHAR(30) NOT NULL,
     CONSTRAINT Kaffeparti_PK PRIMARY KEY (ID),
     CONSTRAINT Kaffeparti_FK1 FOREIGN KEY (GårdID) REFERENCES Gård(ID),
     CONSTRAINT Kafeparti_FK2 FOREIGN KEY (ForedlingsmetodeNavn) REFERENCES Foredlingsmetode(Navn),
-    CONSTRAINT Kaffeparti_FK3 FOREIGN KEY (KaffebønneArt) REFERENCES DyrketKaffebønne(Art)
 );
 
 CREATE TABLE Foredlingsmetode (
@@ -86,3 +84,20 @@ CREATE TABLE DyrketKaffebønne (
     CONSTRAINT DyrketKaffebønne_FK2 FOREIGN KEY (KaffepartiID) REFERENCES Kaffeparti(ID)
     CONSTRAINT DyrketKaffebønne_FK3 FOREIGN KEY (KaffebønneArt) REFERENCES Kaffebønne(Art)
 );
+
+/*Brukerhistorie 1*/
+INSERT INTO Kaffebønne (Art,Navn)
+VALUES ("Coffea Arabica", "Bourbon"),
+("Coffea Robusta", "Robusta"),
+("Coffea Liberica", "Liberica");
+
+INSERT INTO Foredlingsmetode (Navn, Beskrivelse)
+VALUES ("Bærtørket", "Hele Kaffebæret tørkes. 
+Med denne prosesseringen fjernes verken skallet eller fruktkjøttet før tørking. 
+Denne prosesseringen gir ofte mer fyldige kaffe med stor munnfølelse. Denne prosesseringen kalles også for Natural.");
+
+INSERT INTO Gård (Navn, HøydeOverHavet, Region, Land)
+Values ("Nombre de Dios", 1500, "Santa Ana", "El Salvador");
+
+INSERT INTO Kaffeparti(Innhøstingsår, Betalt, GårdID, ForedlingsmetodeNavn)
+VALUES (2021, 8, (SELECT ID from Gård WHERE Navn='Nombre de Dios') , "Bærtørket");
