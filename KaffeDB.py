@@ -30,7 +30,8 @@ class KaffeDB:
     #Henter alle brukere i kaffesmaking tabellen, sortert etter hvor mange kaffer som brukeren har smakt på
     def topList(self):
         request = 'SELECT Fornavn, Etternavn, COUNT(BrukerEpost) FROM Kaffesmaking LEFT JOIN Bruker ON Kaffesmaking.BrukerEpost = Bruker.Epost GROUP BY BrukerEpost ORDER BY COUNT(BrukerEpost) DESC'
-        print(self.connection.execute(request).fetchall())
+        for row in self.connection.execute(request).fetchall():
+            print(row)
 
     #Legger til en bruker i Bruker tabellen dersom eposten ikke eksisterer i tabellen fra før
     def registerUser(self, userMail, password, firstName, lastName):
