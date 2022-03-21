@@ -1,18 +1,4 @@
-import os
-from multiprocessing import connection
 import sqlite3
-
-def deleteDB():
-    if os.path.exists("KaffeDB.db"):
-        os.remove("KaffeDB.db")
-        print("Sucessfully removed KaffeDB.db")
-    else:
-        print("KaffeDB does not exist.") 
-
-def runSqlScript():
-    deleteDB()
-    print("Creating KaffeDB.db from SQL script...")
-    os.system('cmd /c "sqlite3 KaffeDB.db -init KaffeDB.sql .quit"')
 
 class KaffeDB:
     connection = None
@@ -57,13 +43,3 @@ class KaffeDB:
             self.connection.commit()
         else:
             print('Denne brukeren har allerede smakt på denne kaffen')
-
-runSqlScript()
-kaffeDB = KaffeDB() #Det må være en instans av klassen for at metodene skal fungere
-kaffeDB.connect("KaffeDB.db") #Denne må kjøres før andre klassemetoder (Den laster inn databasen)
-kaffeDB.showAllItems("Ferdigbrentkaffe")
-kaffeDB.getParameter("FerdigbrentKaffe", "ID", "1", "Navn")
-kaffeDB.getItem("FerdigbrentKaffe", "ID", "2")
-kaffeDB.registerUser("testbruker@kaffeDB.no", "test123", "test", "bruker")
-kaffeDB.review("testbruker@kaffeDB.no", 1, "Dette er en fortreffelig kaffe. 10/10!", 10, "2022-03-18") #vil feile når sjekken for registrert bruker er implementert
-kaffeDB.showAllItems("Kaffesmaking")
