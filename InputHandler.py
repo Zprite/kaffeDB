@@ -1,6 +1,7 @@
 import KaffeDB
 
 class InputHandler :
+    kaffeDB = None
 
     def __init__(self):
         self.kaffeDB = KaffeDB()
