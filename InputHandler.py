@@ -1,5 +1,11 @@
+import KaffeDB
+
 class InputHandler :
-    
+
+    def __init__(self):
+        self.kaffeDB = KaffeDB()
+        self.kaffeDB.connect("KaffeDB.db")
+
     #inputString = ""
     inputRequestMessage = "Input a command (type 'help' for a list of commands): "
     outputMessage = ""
@@ -42,8 +48,8 @@ class InputHandler :
             review = input ("Smaksnotat (beskrivelse på kaffeopplevelsen): ")
             # TODO : Insert a new review into the database
         elif (str.lower() == "toppliste"):
-            # TODO: Execute toplist-command 
             self.outputMessage = "toplist: "
+            self.kaffeDB.toplist()
         elif (str.lower() == "søk"):
             # TODO: vanskelig metode :(
             self.outputMessage = ""
