@@ -9,12 +9,13 @@ kaffeDB = KaffeDB() #Det må være en instans av klassen for at metodene skal fu
 kaffeDB.connect("KaffeDB.db") #Denne må kjøres før andre klassemetoder (Den laster inn databasen)
 
 exit = False
+IH = InputHandler()
 
-while (exit != True):
-    IH = InputHandler()
+while (IH.shouldExit() != True):
     IH.handleInput(input(IH.getInputRequestMessage()))
     if (IH.outputMessage):
         print(IH.outputMessage)
+        IH.clearOutputMessage()
 
 #kaffeDB.showAllItems("Ferdigbrentkaffe")
 #kaffeDB.getParameter("FerdigbrentKaffe", "ID", "1", "Navn")
