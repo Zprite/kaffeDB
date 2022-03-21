@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class KaffeDB:
     connection = None
     cursor = None
