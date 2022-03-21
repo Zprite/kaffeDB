@@ -23,6 +23,11 @@ class KaffeDB:
         print(self.connection.execute(f'SELECT {parameterName} FROM {table} WHERE {pkName}={pkValue}').fetchone()[0]) #Kan fjernes når appen er komplett
         return self.connection.execute(f'SELECT {parameterName} FROM {table} WHERE {pkName}={pkValue}').fetchone()[0]
 
+    #Henter alle brukere i kaffesmaking tabellen, sortert etter hvor mange kaffer som brukeren har smakt på
+    def topList(self):
+        request = 'SELECT Fornavn, Etternavn, COUNT(BrukerEpost) FROM Kaffesmaking LEFT JOIN Bruker ON Kaffesmaking.BrukerEpost = Bruker.Epost GROUP BY BrukerEpost ORDER BY COUNT(BrukerEpost) DESC'
+        print(self.connection.execute(request).fetchall())
+
     #Legger til en bruker i Bruker tabellen dersom eposten ikke eksisterer i tabellen fra før
     def registerUser(self, userMail, password, firstName, lastName):
         #TODO sjekk om eposten faktisk er en epost (hvis nødvendig)
@@ -48,4 +53,6 @@ kaffeDB.getParameter("FerdigbrentKaffe", "ID", "1", "Navn")
 kaffeDB.getItem("FerdigbrentKaffe", "ID", "2")
 kaffeDB.registerUser("testbruker@kaffeDB.no", "test123", "test", "bruker")
 kaffeDB.review("testbruker@kaffeDB.no", 1, "Dette er en fortreffende kaffe. 10/10!", 10, "2022-03-18") #vil feile når sjekken for registrert bruker er implementert
+kaffeDB.review("testbruker@kaffeDB.no", 2, "God nok", 7, "2022-04-18") #vil feile når sjekken for registrert bruker er implementert
 kaffeDB.showAllItems("Kaffesmaking")
+kaffeDB.topList()
