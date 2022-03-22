@@ -1,5 +1,7 @@
+import re
 import sqlite3
-
+from xmlrpc.client import DateTime
+import pandas as pd
 
 class KaffeDB:
     connection = None
@@ -24,32 +26,51 @@ class KaffeDB:
     
     #Henter ut et parameter fra et element i en tabell (kanskje ikke nødvendig)
     def getParameter(self, table, pkName, pkValue, parameterName):
-        print(self.cursor.execute(f'SELECT {parameterName} FROM {table} WHERE {pkName}={pkValue}').fetchone()[0]) #Kan fjernes når appen er komplett
+        print(self.cursor.execute(f'SELECT {parameterName} FROM {table} WHERE {pkName}={pkValue}').fetchone()[0]) #Kan fjernes når appen er komplet
         return self.cursor.execute(f'SELECT {parameterName} FROM {table} WHERE {pkName}={pkValue}').fetchone()[0]
+
+    def getTable(self, table):
+        return self.cursor.execute(f'SELECT * FROM {table}').fetchall()
+    def getCoffeeNames(self):
+        return self.cursor.execute('SELECT Navn FROM FerdigbrentKaffe').fetchall()
+    def getBreweies(self):
+        return self.cursor.execute('SELECT Navn, Lokasjon FROM Kaffebrenneri').fetchall()
 
     #Henter alle brukere i kaffesmaking tabellen, sortert etter hvor mange kaffer som brukeren har smakt på
     def topList(self):
         request = 'SELECT Fornavn, Etternavn, COUNT(BrukerEpost) FROM Kaffesmaking LEFT JOIN Bruker ON Kaffesmaking.BrukerEpost = Bruker.Epost GROUP BY BrukerEpost ORDER BY COUNT(BrukerEpost) DESC'
-        for row in self.connection.execute(request).fetchall():
-            print(row)
+        return self.cursor.execute(request).fetchall()
 
     #Legger til en bruker i Bruker tabellen dersom eposten ikke eksisterer i tabellen fra før
-    def registerUser(self, userMail, password, firstName, lastName):
+    def registerUser(self, email, password, firstName, lastName):
         #TODO sjekk om eposten faktisk er en epost (hvis nødvendig)
-        if self.cursor.execute('SELECT * FROM Bruker WHERE Epost=?', (userMail,)).fetchone() == None:
-            self.cursor.execute('INSERT INTO Bruker VALUES (?, ?, ?, ?)', (userMail, password, firstName, lastName))
+        if self.cursor.execute('SELECT * FROM Bruker WHERE Epost=?', (email,)).fetchone() == None:
+            self.cursor.execute('INSERT INTO Bruker VALUES (?, ?, ?, ?)', (email, password, firstName, lastName))
             self.connection.commit()
         else:
             print('Brukeren eksisterer allerede i databasen')
 
+    # Sjekker om bruker med passord finnes i systemet
+    # NB: Applikasjonen bruker ikke sikker passordlagring for enkelhets skyld. Aldri lagre passord som plaintext i ekte applikasjoner.
+    def authenticateUser(self, email, password):
+        return not (self.cursor.execute('SELECT * FROM Bruker WHERE Epost=? AND Passord=?', (email,password)).fetchone() == None)
     #Legger til et element i Kaffesmaking tabellen
-    def review(self, userMail, coffeeID, note, score, date):
-        #TODO Sjekk at mailen ligger i databasen fra før
-        if self.cursor.execute('SELECT * FROM Kaffesmaking WHERE BrukerEpost=? AND FerdigbrentKaffeID=?', (userMail, coffeeID,)).fetchone() == None:
-            self.cursor.execute('INSERT INTO Kaffesmaking VALUES (?, ?, ?, ?, ?)', (userMail, coffeeID, note, score, date))
-            self.connection.commit()
-        else:
-            print('Denne brukeren har allerede smakt på denne kaffen')
+    def review(self, email, score, note, coffeeName, breweryName, breweryLocation):
+        if not (self.cursor.execute('SELECT * FROM Bruker WHERE Epost=?', (email,)).fetchone() == None):
+            breweryID = self.cursor.execute('SELECT ID FROM Kaffebrenneri WHERE Navn=? AND Location=?', (breweryName, breweryLocation)).fetchone()
+            # Hent den siste kaffen, ettersom kaffenavn + kaffebrenneriID ikke er en komplett nøkkel for tabellen.
+            coffeeID = self.cursor.execute('SELECT ID FROM FerdigbrentKaffe WHERE Navn=? AND KaffebrenneriID=?', (coffeeName, breweryID)).fetchone()
+            if self.cursor.execute('SELECT * FROM Kaffesmaking WHERE BrukerEpost=? AND FerdigbrentKaffeID=?', (email, coffeeID,)).fetchone() == None:
+                print(coffeeID + email + note + score)
+                self.cursor.execute('INSERT INTO Kaffesmaking VALUES (?, ?, ?, ?, CURRENT_DATE)', (email, coffeeID, note, score))
+                self.connection.commit()
+            else:
+                print('Denne brukeren har allerede smakt på denne kaffen')
+    def getReviews(self):
+        request = """SELECT Smaksnotat, AntallPoeng, FerdigbrentKaffe.Navn 
+        FROM Kaffesmaking INNER JOIN FerdigbrentKaffe ON FerdigbrentKaffeID = FerdigbrentKaffe.ID 
+        INNER JOIN Bruker ON BrukerEpost = Bruker.Epost """
+        self.cursor.execute(request).fetchone()
 
     #Skriver ut navnet på kaffen og brenneriet hvor enten en bruker eller et brenneri har beskrevet kaffen med et nøkkelord
     def search (self, keyword):

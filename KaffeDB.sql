@@ -23,7 +23,7 @@ CREATE TABLE FerdigbrentKaffe (
 CREATE TABLE Kaffesmaking (
     BrukerEpost VARCHAR(64) NOT NULL,
     FerdigbrentKaffeID INTEGER NOT NULL,
-    Smaksnotater TEXT,
+    Smaksnotat TEXT,
     AntallPoeng SMALLINT NOT NULL,
     Smaksdato DATE NOT NULL,
     CONSTRAINT Kaffesmaking_PK PRIMARY KEY (BrukerEpost, FerdigbrentKaffeID),
