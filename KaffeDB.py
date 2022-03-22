@@ -50,3 +50,10 @@ class KaffeDB:
             self.connection.commit()
         else:
             print('Denne brukeren har allerede smakt på denne kaffen')
+
+    #Skriver ut navnet på kaffen og brenneriet hvor enten en bruker eller et brenneri har beskrevet kaffen med et nøkkelord
+    def search (self, keyword):
+        request = '''SELECT FerdigbrentKaffe.Navn, Kaffebrenneri.Navn FROM Kaffesmaking 
+        LEFT JOIN FerdigBrentKaffe ON Kaffesmaking.FerdigbrentKaffeID = FerdigbrentKaffe.ID LEFT JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
+        WHERE FerdigbrentKaffe.Beskrivelse LIKE ? OR Kaffesmaking.Smaksnotater LIKE ? GROUP BY FerdigbrentKaffe.ID'''
+        print(self.cursor.execute(request, ('%'+keyword+'%', '%'+keyword+'%')).fetchall())

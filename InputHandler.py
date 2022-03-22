@@ -52,7 +52,8 @@ class InputHandler :
             self.outputMessage = "toplist: "
             self.kaffeDB.toplist()
         elif (str.lower() == "søk"):
-            # TODO: vanskelig metode :(
+            keyword = input("Søkeord: ")
+            self.kaffeDB.search(keyword)
             self.outputMessage = ""
         elif (str.lower() == "beste-verdi"):
             # TODO: Execute best-value command
