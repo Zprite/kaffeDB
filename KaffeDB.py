@@ -1,7 +1,7 @@
 import re
 import sqlite3
 from xmlrpc.client import DateTime
-import pandas as pd
+#import pandas as pd
 
 class KaffeDB:
     connection = None
@@ -74,7 +74,7 @@ class KaffeDB:
 
     #Skriver ut navnet på kaffen og brenneriet hvor enten en bruker eller et brenneri har beskrevet kaffen med et nøkkelord
     def search (self, keyword):
-        request = '''SELECT FerdigbrentKaffe.Navn, Kaffebrenneri.Navn FROM Kaffesmaking 
-        LEFT JOIN FerdigBrentKaffe ON Kaffesmaking.FerdigbrentKaffeID = FerdigbrentKaffe.ID LEFT JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
-        WHERE FerdigbrentKaffe.Beskrivelse LIKE ? OR Kaffesmaking.Smaksnotater LIKE ? GROUP BY FerdigbrentKaffe.ID'''
+        request = '''SELECT FerdigbrentKaffe.Navn, Kaffebrenneri.Navn FROM FerdigbrentKaffe 
+        LEFT JOIN Kaffesmaking ON FerdigbrentKaffe.ID = Kaffesmaking.FerdigbrentKaffeID INNER JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
+        WHERE FerdigbrentKaffe.Beskrivelse LIKE ? OR Kaffesmaking.Smaksnotat LIKE ? GROUP BY FerdigbrentKaffe.ID'''
         print(self.cursor.execute(request, ('%'+keyword+'%', '%'+keyword+'%')).fetchall())
