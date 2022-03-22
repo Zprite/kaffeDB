@@ -5,8 +5,7 @@ from InputHandler import InputHandler
 
 Utils.deleteDB()
 Utils.runSqlScript()
-kaffeDB = KaffeDB() #Det må være en instans av klassen for at metodene skal fungere
-kaffeDB.connect("KaffeDB.db") #Denne må kjøres før andre klassemetoder (Den laster inn databasen)
+
 
 exit = False
 IH = InputHandler()
