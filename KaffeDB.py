@@ -1,3 +1,4 @@
+import re
 import sqlite3
 from xmlrpc.client import DateTime
 import pandas as pd
@@ -66,5 +67,7 @@ class KaffeDB:
             else:
                 print('Denne brukeren har allerede smakt på denne kaffen')
     def getReviews(self):
-        self.cursor.execute(
-            "SELECT Smaksnotat, AntallPoeng, FerdigbrentKaffe.Navn FROM Kaffesmaking INNER JOIN FerdigbrentKaffe WHERE (FerdigbrentKaffeID = FerdigbrentKaffe.ID)").fetchone()
+        request = """SELECT Smaksnotat, AntallPoeng, FerdigbrentKaffe.Navn 
+        FROM Kaffesmaking INNER JOIN FerdigbrentKaffe ON FerdigbrentKaffeID = FerdigbrentKaffe.ID 
+        INNER JOIN Bruker ON BrukerEpost = Bruker.Epost """
+        self.cursor.execute(request).fetchone()
