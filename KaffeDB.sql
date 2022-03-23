@@ -157,7 +157,6 @@ INSERT INTO FerdigbrentKaffe(Navn, Dato, Beskrivelse, Brenningsgrad, Kilopris, K
 VALUES ("Vinterkaffe 2022", "2022-01-20", "En velsmakende og kompleks kaffe for mørketiden", "Lys", 600, 
 (SELECT ID from Kaffeparti WHERE (Innhøstingsår=2021 and Betalt=8)),
 (SELECT ID from Kaffebrenneri WHERE (Navn="Jacobsen & Svart" and Lokasjon="Trondheim"))),
-
 ("Vårkaffe 2022", "2022-03-20", "Frisk og fyldig kaffe med en floral smak som hører våren til", "Middels", 550, 1, 5);
 
 

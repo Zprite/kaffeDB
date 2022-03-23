@@ -33,24 +33,39 @@ class KaffeDB:
         return not (self.cursor.execute('SELECT * FROM Bruker WHERE Epost=? AND Passord=?', (email,password)).fetchone() == None)
     #Legger til et element i Kaffesmaking tabellen
 
-    def review(self, email, score, note, coffeeName, breweryName, breweryLocation):
+    def postreview(self, email, score, note, coffeeName, breweryName, breweryLocation):
+        # Sjekker at bruker eksisterer
         if not (self.cursor.execute('SELECT * FROM Bruker WHERE Epost=?', (email,)).fetchone() == None):
-            breweryID = self.cursor.execute('SELECT ID FROM Kaffebrenneri WHERE Navn=? AND Location=?', (breweryName, breweryLocation)).fetchone()
+            breweryID = self.cursor.execute('SELECT ID FROM Kaffebrenneri WHERE Navn=? AND Lokasjon=?', (str(breweryName), str(breweryLocation))).fetchone()
+            ## Feilhåndtering ved ugyldig brukerinput
+            if (breweryID == None):
+                raise Exception(f"Finner ingen kaffebrennerier med navn: {breweryName} og lokasjon: {breweryLocation}")
+            breweryID = breweryID[0]
             # Hent den siste kaffen, ettersom kaffenavn + kaffebrenneriID ikke er en komplett nøkkel for tabellen.
-            coffeeID = self.cursor.execute('SELECT ID FROM FerdigbrentKaffe WHERE Navn=? AND KaffebrenneriID=?', (coffeeName, breweryID)).fetchone()
-            if self.cursor.execute('SELECT * FROM Kaffesmaking WHERE BrukerEpost=? AND FerdigbrentKaffeID=?', (email, coffeeID,)).fetchone() == None:
-                print(coffeeID + email + note + score)
-                self.cursor.execute('INSERT INTO Kaffesmaking VALUES (?, ?, ?, ?, CURRENT_DATE)', (email, coffeeID, note, score))
+            coffeeID = self.cursor.execute('SELECT ID FROM FerdigbrentKaffe WHERE Navn=? AND KaffebrenneriID=?', (str(coffeeName), int(breweryID))).fetchone()
+            ## Feilhåndtering ved ugyldig brukerinput
+            if (coffeeID == None):
+                raise Exception(f"Finner ingen Kaffe med navn: {coffeeName} på kaffebrenneri: {breweryName}, {breweryLocation}")
+            coffeeID = coffeeID[0]
+            # Sjekker at ikke det finnes en kaffesmaking med samme kaffeID hos brukeren
+            if  self.cursor.execute('SELECT * FROM Kaffesmaking WHERE BrukerEpost=? AND FerdigbrentKaffeID=?', (str(email), int(coffeeID))).fetchone() == None:
+                print("Opretter kaffesmaking....")
+                self.cursor.execute('INSERT INTO Kaffesmaking VALUES (?, ?, ?, ?, CURRENT_DATE)', (str(email), int(coffeeID), str(note), int(score)))
                 self.connection.commit()
+                print("--- Opretting av kaffesmaking var vellykket! ---")
             else:
-                print('Denne brukeren har allerede smakt på denne kaffen')
+                raise Exception('Denne brukeren har allerede smakt på denne kaffen')
                 
     def getTable(self, table):
-        return self.cursor.execute(f'SELECT * FROM {table}').fetchall()
+        return (tuple("Tabell") , self.cursor.execute(f'SELECT * FROM {table}').fetchall())
     def getCoffeeNames(self):
-        return self.cursor.execute('SELECT Navn FROM FerdigbrentKaffe').fetchall()
+        return (tuple("Navn på Kaffe") , self.cursor.execute('SELECT Navn FROM FerdigbrentKaffe').fetchall())
     def getBreweies(self):
-        return self.cursor.execute('SELECT Navn, Lokasjon FROM Kaffebrenneri').fetchall()
+        return (("Kaffebrenneri" , "Lokasjon"), self.cursor.execute('SELECT Navn, Lokasjon FROM Kaffebrenneri').fetchall())
+    def getCoffeAndBrewery(self):
+        request = """Select FerdigbrentKaffe.Navn, Kaffebrenneri.Navn, Kaffebrenneri.Lokasjon
+                FROM FerdigbrentKaffe INNER JOIN Kaffebrenneri ON (KaffebrenneriID = Kaffebrenneri.ID)"""
+        return(("Navn på Kaffe", "Kaffebrenneri" , "Lokasjon"), self.cursor.execute(request).fetchall())
 
     #Henter alle brukere i kaffesmaking tabellen, sortert etter hvor mange kaffer som brukeren har smakt på
     def topList(self):
@@ -69,6 +84,8 @@ class KaffeDB:
     #Skriver ut navnet på kaffen og brenneriet hvor enten en bruker eller et brenneri har beskrevet kaffen med et nøkkelord
     def search (self, keyword):
         request = '''SELECT FerdigbrentKaffe.Navn, Kaffebrenneri.Navn FROM FerdigbrentKaffe 
-        LEFT JOIN Kaffesmaking ON FerdigbrentKaffe.ID = Kaffesmaking.FerdigbrentKaffeID INNER JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
-        WHERE FerdigbrentKaffe.Beskrivelse LIKE ? OR Kaffesmaking.Smaksnotat LIKE ? GROUP BY FerdigbrentKaffe.ID'''
+        LEFT JOIN Kaffesmaking ON FerdigbrentKaffe.ID = Kaffesmaking.FerdigbrentKaffeID 
+        INNER JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
+        WHERE FerdigbrentKaffe.Beskrivelse LIKE ? OR Kaffesmaking.Smaksnotat LIKE ? 
+        GROUP BY FerdigbrentKaffe.ID'''
         return(("Navn på Kaffe", "Kaffebrenneri"), (self.cursor.execute(request, ('%'+keyword+'%', '%'+keyword+'%')).fetchall()))

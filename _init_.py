@@ -3,8 +3,8 @@ from KaffeDB import KaffeDB
 from Utils import Utils
 from InputHandler import InputHandler
 
-Utils.deleteDB()
-Utils.runSqlScript()
+#Utils.deleteDB()
+#Utils.runSqlScript()
 
 IH = InputHandler()
 
