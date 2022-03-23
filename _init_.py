@@ -6,8 +6,6 @@ from InputHandler import InputHandler
 Utils.deleteDB()
 Utils.runSqlScript()
 
-
-exit = False
 IH = InputHandler()
 
 while (IH.shouldExit() != True):

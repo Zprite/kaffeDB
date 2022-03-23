@@ -1,5 +1,6 @@
 import re
 import sqlite3
+from typing import Tuple
 from xmlrpc.client import DateTime
 #import pandas as pd
 
@@ -77,4 +78,4 @@ class KaffeDB:
         request = '''SELECT FerdigbrentKaffe.Navn, Kaffebrenneri.Navn FROM FerdigbrentKaffe 
         LEFT JOIN Kaffesmaking ON FerdigbrentKaffe.ID = Kaffesmaking.FerdigbrentKaffeID INNER JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
         WHERE FerdigbrentKaffe.Beskrivelse LIKE ? OR Kaffesmaking.Smaksnotat LIKE ? GROUP BY FerdigbrentKaffe.ID'''
-        print(self.cursor.execute(request, ('%'+keyword+'%', '%'+keyword+'%')).fetchall())
+        return(("Navn på Kaffe", "Kaffebrenneri"), (self.cursor.execute(request, ('%'+keyword+'%', '%'+keyword+'%')).fetchall()))
