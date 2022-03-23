@@ -5,6 +5,6 @@ from Utils import Utils
 #Utils.runSqlScript()
 
 UC = UserController()
-
+print("---- Velkommen til kaffedb! ----")
 while (UC.shouldExit() != True):
     UC.handleInput(input(UC.getInputRequestMessage()))
