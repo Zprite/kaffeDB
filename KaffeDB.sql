@@ -157,7 +157,33 @@ INSERT INTO FerdigbrentKaffe(Navn, Dato, Beskrivelse, Brenningsgrad, Kilopris, K
 VALUES ("Vinterkaffe 2022", "2022-01-20", "En velsmakende og kompleks kaffe for mørketiden", "Lys", 600, 
 (SELECT ID from Kaffeparti WHERE (Innhøstingsår=2021 and Betalt=8)),
 (SELECT ID from Kaffebrenneri WHERE (Navn="Jacobsen & Svart" and Lokasjon="Trondheim"))),
-
 ("Vårkaffe 2022", "2022-03-20", "Frisk og fyldig kaffe med en floral smak som hører våren til", "Middels", 550, 1, 5);
 
+/* Mere Kaffesmaking, Bruker og FerdigbrentKaffe */
+INSERT INTO FerdigbrentKaffe(Navn, Dato, Beskrivelse, Brenningsgrad, Kilopris, KaffepartiID, KaffebrenneriID)
+VALUES ("Ettermiddagskaffe 2022", "2022-02-17", "Dagen behøver ikke bare et høydepunkt med denne velsmakende kaffen", "Mørk", 500, 2, 5),
+("Premiumkaffe 2022", "2022-03-18", "Et av de beste kaffebønenne, brent til perfeksjon", "Middels", 750, 2, 2),
+("Økonomikaffe 2022", "2022-02-20", "Frisk og velsmakende kaffe som lønner seg økonomisk", "Lys", 450, 4, 3);
 
+INSERT INTO Bruker(Epost, Passord, Fornavn, Etternavn)
+VALUES ("ONormann@protonmail.com", "Hemmelig", "Ola", "Normann"),
+("eksempelbruker@gmail.com", "qwerty", "Eksempel", "Bruker"),
+("ivrigsmaker@gmail.com", "kaffeErBest", "Karl", "Jensen"),
+("kompis@outlook.com", "asdfghjkl", "Frank", "Olsen");
+
+INSERT INTO Kaffesmaking(BrukerEpost, FerdigbrentKaffeID, Smaksnotat, AntallPoeng, Smaksdato)
+/* Brukerhistorie 1 */
+VALUES ("ONormann@protonmail.com", 1, "Wow – en odyssé for smaksløkene: sitrusskall, melkesjokolade, aprikos!", 10, "2022-01-22"),
+/* Flere kaffesmakinger */
+("ONormann@protonmail.com", 4, "Lite verdi for pengene sammenlignet med andre alternativer, men ikke dårlig", 7, "2022-03-19"),
+("eksempelbruker@gmail.com", 1, "Dette er kaffe med mening!", 9, "2022-01-23"),
+("eksempelbruker@gmail.com", 2, "Våren er ikke den samme uten denne!", 8, "2022-03-22"),
+("eksempelbruker@gmail.com", 5, "En økonomisk givende kaffe som smaker like godt som konkurrentene", 8, "2022-03-01"),
+("ivrigsmaker@gmail.com", 1, "Dette er kanskje den beste kaffen som finnes!", 10, "2022-01-21"),
+("ivrigsmaker@gmail.com", 2, "En skikkelig god vårkaffe!", 9, "2022-03-23"),
+("ivrigsmaker@gmail.com", 3, "En mørk og fyldig kaffe. Denne hører hverdagen til!", 9, "2022-02-19"),
+("ivrigsmaker@gmail.com", 4, "Det koster å være eksklusiv, men denne var verdt det!", 9, "2022-03-20"),
+("ivrigsmaker@gmail.com", 5, "Ikke helt min smak, men likevel grei til å være den prisen", 5, "2022-02-25"),
+("kompis@outlook.com", 2, "Smaken er ikke helt hva man forventer av en vårkaffe", 4, "2022-03-21"),
+("kompis@outlook.com", 3, "Bland dette med en plate sjokolade og hele ettermiddagen er berget. Denne kaffen er på et helt annet nivå!", 10, "2022-02-25"),
+("kompis@outlook.com", 5, "Til den prisen så er smaken helt forbløffende!", 10, "2022-02-26");
