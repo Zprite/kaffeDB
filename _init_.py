@@ -10,9 +10,6 @@ IH = InputHandler()
 
 while (IH.shouldExit() != True):
     IH.handleInput(input(IH.getInputRequestMessage()))
-    if (IH.outputMessage):
-        print(IH.outputMessage)
-        IH.clearOutputMessage()
 
 #kaffeDB.showAllItems("Ferdigbrentkaffe")
 #kaffeDB.getParameter("FerdigbrentKaffe", "ID", "1", "Navn")

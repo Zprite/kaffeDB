@@ -10,17 +10,15 @@ class InputHandler :
         self.kaffeDB = KaffeDB()
         self.kaffeDB.connect("KaffeDB.db")
 
-    #inputString = ""
     inputRequestMessage = "Input a command (type 'help' for a list of commands): "
-    outputMessage = ""
     exit = False
 
-
-
-    def printTable(self, header, table):
+    def printTable(self, table):
         if (table != None):
-            df = pd.DataFrame(table, None, header)
-            print(df)
+            header = table[0]
+            data = table[1]
+            df = pd.DataFrame(data, None, header)
+            print("\n", df , "\n")
         else:
             print("\n------------ Tabbellen er tom ------------\n")
 
@@ -32,9 +30,6 @@ class InputHandler :
     
     def getInputRequestMessage (self) :
         return self.inputRequestMessage
-
-    def clearOutputMessage (self) :
-        self.outputMessage = None
 
     def registerReview(self):
         print("Registrert kaffe: ")
@@ -67,7 +62,7 @@ class InputHandler :
     def handleInput(self, str):
         #self._setInputString(str)
         if (str.lower() == "help"):
-            self.outputMessage = "Liste av kommandoer: \n - anmeldelser \n - login \n - registrer \n - anmeld \n - toppliste \n - søk \n - beste-verdi\n"
+            print("Liste av kommandoer: \n - anmeldelser \n - login \n - registrer \n - anmeld \n - toppliste \n - søk \n - beste-verdi\n")
         elif (str.lower() == "exit"):
             self.exit = True
         elif (str.lower() == "login"):
@@ -82,18 +77,17 @@ class InputHandler :
             if (self.loggedInUser):
                 self.registerReview()
             else:
-                self.outputMessage = "Du må logge inn med en registrert bruker for å kunne legge inn kaffesmaking!"
+                print("Du må logge inn med en registrert bruker for å kunne legge inn kaffesmaking!")
         elif (str.lower() == "toppliste"):
             print ("toplist: ")
             self.printTable(self.kaffeDB.topList())
         elif (str.lower() == "søk"):
             keyword = input("Søkeord: ")
-            table = (self.kaffeDB.search(keyword))
-            self.printTable(table[0],table[1])
+            self.printTable((self.kaffeDB.search(keyword)))
             
         elif (str.lower() == "beste-verdi"):
             # TODO: Execute best-value command
-            self.outputMessage = "Best value: "
+            print("Best value: ")
             
 
             
