@@ -60,9 +60,14 @@ class KaffeDB:
     def getCountries(self):
         request = "SELECT DISTINCT Land from Gård"
         return(tuple("Navn"), self.cursor.execute(request).fetchall())
-    def getForedlingsmetoder(self):
-        request = "SELECT Navn, Beskrivelse from Foredlingsmetode"
-        return (("Foredlingsmetode", "Beskrivelse"), self.cursor.execute(request).fetchall())
+    
+    def getAllCoffeeDetailed(self):
+        request = """SELECT FerdigbrentKaffe.Navn, Kaffebrenneri.Navn, Gård.Land, Foredlingsmetode.Navn
+        FROM FerdigbrentKaffe INNER JOIN Kaffebrenneri ON (KaffebrenneriID = Kaffebrenneri.ID)
+        INNER JOIN Kaffeparti ON (KaffepartiID = Kaffeparti.ID)
+        INNER JOIN Foredlingsmetode ON (ForedlingsmetodeNavn = Foredlingsmetode.Navn)
+        INNER JOIN Gård ON (Kaffeparti.GårdID = Gård.ID)"""
+        return(("Navn på Kaffe" ,"Kaffebrenneri", "Land", "Foredlingsmetode"),self.cursor.execute(request).fetchall())
 
     #Henter alle brukere i kaffesmaking tabellen, sortert etter hvor mange kaffer som brukeren har smakt på
     def topList(self):
@@ -96,10 +101,3 @@ class KaffeDB:
         INNER JOIN Gård ON (Kaffeparti.GårdID = Gård.ID)
         WHERE (Gård.Land IN ({}) AND Foredlingsmetode.Navn != ?) """.format(', '.join('?' for country in countryList))
         return (("Navn på Kaffe", "Kaffebrenneri"), self.cursor.execute(request,(*countryList,method)).fetchall())
-
-
-#SELECT FerdigbrentKaffe.Navn, Kaffebrenneri.Navn, Gård.Land, Foredlingsmetode.Navn
-#FROM FerdigbrentKaffe INNER JOIN Kaffebrenneri ON (KaffebrenneriID = Kaffebrenneri.ID)
-#INNER JOIN Kaffeparti ON (KaffepartiID = Kaffeparti.ID)
-#INNER JOIN Foredlingsmetode ON (ForedlingsmetodeNavn = Foredlingsmetode.Navn)
-#INNER JOIN Gård ON (Kaffeparti.GårdID = Gård.ID);

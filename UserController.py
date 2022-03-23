@@ -90,6 +90,7 @@ class UserController :
     def handleInput(self, str):
         if (str.lower() == "hjelp"):
             print("""Liste av kommandoer: \n 
+            - all-kaffe
             - anmeldelser 
             - anmeld
             - beste-verdi
@@ -108,6 +109,8 @@ class UserController :
             self.login(email, password)
         elif (str.lower() == "registrer"):
             self.register()
+        elif(str.lower() == "all-kaffe"):
+            self.printTable("All kaffe", self.kaffeDB.getAllCoffeeDetailed())
         elif (str.lower() == "anmeldelser"):
             self.printTable("Brukeranmeldelser", self.kaffeDB.getReviews())
         elif (str.lower() == "anmeld"):
