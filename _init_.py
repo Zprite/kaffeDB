@@ -1,8 +1,8 @@
 from UserController import UserController
 from Utils import Utils
 
-Utils.deleteDB()
-Utils.runSqlScript()
+#Utils.deleteDB()
+#Utils.runSqlScript()
 
 UC = UserController()
 
