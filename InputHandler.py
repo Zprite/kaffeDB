@@ -15,7 +15,6 @@ class InputHandler :
     exit = False
 
     def printTable(self, tableName, table,):
-
         if (table != None and len(table[1]) > 0):
             header = table[0]
             data = table[1]
@@ -27,9 +26,6 @@ class InputHandler :
 
     def shouldExit(self):
         return self.exit
-
-    #def _setInputString (self, str):
-    #    self.inputString = str
     
     def getInputRequestMessage (self) :
         return self.inputRequestMessage
@@ -75,7 +71,6 @@ class InputHandler :
             print("Feil ved innlogging! Sjekk at epost og passord er riktig inntastet.")
 
     def handleInput(self, str):
-        #self._setInputString(str)
         if (str.lower() == "hjelp"):
             print("""Liste av kommandoer: \n 
             - anmeldelser 
@@ -84,8 +79,8 @@ class InputHandler :
             - kaffebrennerier
             - login
             - registrer
-            - toppliste
             - søk 
+            - toppliste
         """)
         elif (str.lower() == "exit"):
             self.exit = True
