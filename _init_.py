@@ -3,18 +3,13 @@ from KaffeDB import KaffeDB
 from Utils import Utils
 from InputHandler import InputHandler
 
-Utils.deleteDB()
-Utils.runSqlScript()
+#Utils.deleteDB()
+#Utils.runSqlScript()
 
-
-exit = False
 IH = InputHandler()
 
 while (IH.shouldExit() != True):
     IH.handleInput(input(IH.getInputRequestMessage()))
-    if (IH.outputMessage):
-        print(IH.outputMessage)
-        IH.clearOutputMessage()
 
 #kaffeDB.showAllItems("Ferdigbrentkaffe")
 #kaffeDB.getParameter("FerdigbrentKaffe", "ID", "1", "Navn")
