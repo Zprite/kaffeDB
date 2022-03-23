@@ -7,16 +7,6 @@ class KaffeDB:
     def connect(self, path):
         self.connection = sqlite3.connect(path)
         self.cursor = self.connection.cursor()
-    
-    ##Henter ut en tuppel fra en tabell basert på tabellnavn, navn på primary key og verdien på primary key
-    #def getItem(self, table, pkName, pkValue):
-    #    print(self.cursor.execute(f'SELECT * FROM {table} WHERE {pkName}={pkValue}').fetchone()) #Kan fjernes når appen er komplett
-    #    return self.cursor.execute(f'SELECT * FROM {table} WHERE {pkName}={pkValue}').fetchone()
-    
-    ##Henter ut et parameter fra et element i en tabell (kanskje ikke nødvendig)
-    #def getParameter(self, table, pkName, pkValue, parameterName):
-    #    print(self.cursor.execute(f'SELECT {parameterName} FROM {table} WHERE {pkName}={pkValue}').fetchone()[0]) #Kan fjernes når appen er komplet
-    #    return self.cursor.execute(f'SELECT {parameterName} FROM {table} WHERE {pkName}={pkValue}').fetchone()[0]
 
     #Legger til en bruker i Bruker tabellen dersom eposten ikke eksisterer i tabellen fra før
     def registerUser(self, email, password, firstName, lastName):
