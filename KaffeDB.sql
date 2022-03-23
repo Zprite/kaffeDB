@@ -111,8 +111,8 @@ Values ("Nombre de Dios", 1500, "Santa Ana", "El Salvador"),
 INSERT INTO Kaffeparti(Innhøstingsår, Betalt, GårdID, ForedlingsmetodeNavn)
 VALUES (2021, 8, (SELECT ID from Gård WHERE Navn='Nombre de Dios') , "Bærtørket"),
 (2022, 6, 2, "Vasket"),
-(2020, 5.5, 3, "Bærtørket"),
-(2020, 5, 4, "Vasket"),
+(2020, 5.5, 3, "Vasket"),
+(2020, 5, 4, "Bærtørket"),
 (2021, 6.5, 5, "Bærtørket");
 
 

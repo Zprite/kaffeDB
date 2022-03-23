@@ -50,7 +50,7 @@ class UserController :
         note = input ("Smaksnotat (beskrivelse på kaffeopplevelsen): ")
         try:
             # Insert a new review into the database
-            self.kaffeDB.postreview(self.loggedInUser, rating, note, coffeeName, breweryName, breweryLocation)
+            self.kaffeDB.postReview(self.loggedInUser, rating, note, coffeeName, breweryName, breweryLocation)
         except Exception as e:
             print("Klarte ikke å oprette kaffesmaking: ", e)
 
@@ -69,6 +69,24 @@ class UserController :
         else:
             print("Feil ved innlogging! Sjekk at epost og passord er riktig inntastet.")
 
+    # Gjør et søk på FerdigbrentKaffe. 
+    # Bruker velger land de ønsker at kaffen kommer fra, og evt. hvilken foredlingsmetode de ikke ønsker.
+    def filterSearch(self):
+        print("Tilgjengelige land: ")
+        ## Pandas does not like printing tables with only 1 column
+        print(self.kaffeDB.getCountries()[1])
+        # Lag liste fra input, og konverter til SQL-liste
+        countryList = input("Skriv inn alle land du ønsker kaffe fra (kommasepparert): ")
+        # Add comma to prevent errors in cases where there is only one entry
+        countryList += ","
+        countryList = countryList.split(',')
+        #print(countryList)
+
+        #NB: CASE-SENSITIVE!!! 
+        print("Foredlingsmetoden til kaffe er enten 'Bærtørket' eller 'Vasket' (NB: må ha stor forbokstav!)")
+        method = input("Skriv inn foredlingsmetoden du IKKE ønsker å inkludere i søket: ")
+        self.printTable("Søkeresultater",self.kaffeDB.filterSearch(countryList, method))
+
     def handleInput(self, str):
         if (str.lower() == "hjelp"):
             print("""Liste av kommandoer: \n 
@@ -79,6 +97,7 @@ class UserController :
             - login
             - registrer
             - søk 
+            - filter-søk
             - toppliste
         """)
         elif (str.lower() == "exit"):
@@ -107,6 +126,8 @@ class UserController :
         elif (str.lower() == "beste-verdi"):
             # TODO: Execute best-value command
             print("Best value: ")
+        elif (str.lower() == "filter-søk"):
+           self.filterSearch() 
         else:
             print("Ugyldig kommando! Bruk 'hjelp' for en liste med kommandoer")
             
