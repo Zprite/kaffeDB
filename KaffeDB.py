@@ -79,3 +79,12 @@ class KaffeDB:
         WHERE FerdigbrentKaffe.Beskrivelse LIKE ? OR Kaffesmaking.Smaksnotat LIKE ? 
         GROUP BY FerdigbrentKaffe.ID'''
         return(("Navn på Kaffe", "Kaffebrenneri"), (self.cursor.execute(request, ('%'+keyword+'%', '%'+keyword+'%')).fetchall()))
+
+    #Sorterer FerdigbrentKaffe etter snittscore/pris og returnerer det
+    def bestValue(self):
+        request = '''SELECT KaffeBrenneri.Navn, FerdigbrentKaffe.Navn, FerdigbrentKaffe.Kilopris, ROUND(avg(Kaffesmaking.AntallPoeng), 2) 
+        FROM FerdigbrentKaffe LEFT JOIN KaffeSmaking ON FerdigbrentKaffe.ID = Kaffesmaking.FerdigbrentKaffeID 
+        INNER JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
+        GROUP BY FerdigbrentKaffe.ID 
+        ORDER BY avg(Kaffesmaking.AntallPoeng)/FerdigbrentKaffe.Kilopris DESC'''
+        return (("Brennerinavn", "Kaffenavn", "Pris", "Gjennomsnittscore"), self.cursor.execute(request).fetchall())
