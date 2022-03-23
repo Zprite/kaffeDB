@@ -127,10 +127,9 @@ class UserController :
             keyword = input("Søkeord: ")
             self.printTable("Søkeresultater", (self.kaffeDB.search(keyword)))
         elif (str.lower() == "beste-verdi"):
-            # TODO: Execute best-value command
-            print("Best value: ")
+            self.printTable("Beste verdi", self.kaffeDB.bestValue())
         elif (str.lower() == "filter-søk"):
-           self.filterSearch() 
+            self.filterSearch() 
         else:
             print("Ugyldig kommando! Bruk 'hjelp' for en liste med kommandoer")
             

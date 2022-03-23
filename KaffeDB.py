@@ -101,3 +101,12 @@ class KaffeDB:
         INNER JOIN Gård ON (Kaffeparti.GårdID = Gård.ID)
         WHERE (Gård.Land IN ({}) AND Foredlingsmetode.Navn != ?) """.format(', '.join('?' for country in countryList))
         return (("Navn på Kaffe", "Kaffebrenneri"), self.cursor.execute(request,(*countryList,method)).fetchall())
+        
+    #Sorterer FerdigbrentKaffe etter snittscore/pris og returnerer det
+    def bestValue(self):
+        request = '''SELECT KaffeBrenneri.Navn, FerdigbrentKaffe.Navn, FerdigbrentKaffe.Kilopris, ROUND(avg(Kaffesmaking.AntallPoeng), 2) 
+        FROM FerdigbrentKaffe LEFT JOIN KaffeSmaking ON FerdigbrentKaffe.ID = Kaffesmaking.FerdigbrentKaffeID 
+        INNER JOIN Kaffebrenneri ON FerdigbrentKaffe.KaffebrenneriID = Kaffebrenneri.ID 
+        GROUP BY FerdigbrentKaffe.ID 
+        ORDER BY avg(Kaffesmaking.AntallPoeng)/FerdigbrentKaffe.Kilopris DESC'''
+        return (("Brennerinavn", "Kaffenavn", "Pris", "Gjennomsnittscore"), self.cursor.execute(request).fetchall())
