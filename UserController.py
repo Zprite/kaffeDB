@@ -1,18 +1,17 @@
-import sqlite3
 from KaffeDB import KaffeDB
 import pandas as pd
 
-class InputHandler :
-
+class UserController :
     loggedInUser = None
     kaffeDB = None
+    inputRequestMessage = "Skriv inn kommando ('hjelp' for en liste med kommandoer): "
+    
+    # Set to true to exit the program
+    exit = False
 
     def __init__(self):
         self.kaffeDB = KaffeDB()
         self.kaffeDB.connect("KaffeDB.db")
-
-    inputRequestMessage = "Skriv inn en kommando (skriv 'hjelp' for en liste med kommandoer): "
-    exit = False
 
     def printTable(self, tableName, table,):
         if (table != None and len(table[1]) > 0):

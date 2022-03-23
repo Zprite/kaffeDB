@@ -117,31 +117,11 @@ VALUES (2021, 8, (SELECT ID from Gård WHERE Navn='Nombre de Dios') , "Bærtørk
 
 
 INSERT INTO DyrketKaffebønne (Art, GårdID, KaffepartiID)
-VALUES (
-    "Coffea Arabica",
-    1,
-    (SELECT ID from Kaffeparti  WHERE (Innhøstingsår=2021 and Betalt=8))
-),
-(
-    "Coffea Robusta",
-    2,
-    (SELECT ID from Kaffeparti  WHERE (Innhøstingsår=2021 and Betalt=6.5))
-),
-(
-    "Coffea Arabica",
-    3,
-    (SELECT ID from Kaffeparti  WHERE (Innhøstingsår=2021 and Betalt=6.5))
-),
-(
-    "Coffea Liberica",
-    4,
-    (SELECT ID from Kaffeparti  WHERE (Innhøstingsår=2020 and Betalt=5))
-),
-(
-    "Coffea Arabica",
-    5,
-    (SELECT ID from Kaffeparti  WHERE (Innhøstingsår=2020 and Betalt=5.5))
-);
+VALUES ("Coffea Arabica",1,1),
+("Coffea Robusta",2,5),
+("Coffea Arabica",3,5),
+("Coffea Liberica",4,4),
+("Coffea Arabica",5,3);
 
 INSERT INTO Kaffebrenneri(Navn, Lokasjon)
 VALUES ("Jacobsen & Svart", "Trondheim"),
@@ -167,15 +147,12 @@ VALUES ("Ettermiddagskaffe 2022", "2022-02-17", "Dagen behøver ikke bare et hø
 
 INSERT INTO Bruker(Epost, Passord, Fornavn, Etternavn)
 VALUES ("ONormann@protonmail.com", "Hemmelig", "Ola", "Normann"),
-("eksempelbruker@gmail.com", "qwerty", "Eksempel", "Bruker"),
+("eksempelbruker@gmail.com", "qwerty", "Hans", "Hansen"),
 ("ivrigsmaker@gmail.com", "kaffeErBest", "Karl", "Jensen"),
 ("kompis@outlook.com", "asdfghjkl", "Frank", "Olsen");
 
 INSERT INTO Kaffesmaking(BrukerEpost, FerdigbrentKaffeID, Smaksnotat, AntallPoeng, Smaksdato)
-/* Brukerhistorie 1 */
-VALUES ("ONormann@protonmail.com", 1, "Wow – en odyssé for smaksløkene: sitrusskall, melkesjokolade, aprikos!", 10, "2022-01-22"),
-/* Flere kaffesmakinger */
-("ONormann@protonmail.com", 4, "Lite verdi for pengene sammenlignet med andre alternativer, men ikke dårlig", 7, "2022-03-19"),
+VALUES ("ONormann@protonmail.com", 4, "Lite verdi for pengene sammenlignet med andre alternativer, men ikke dårlig", 7, "2022-03-19"),
 ("eksempelbruker@gmail.com", 1, "Dette er kaffe med mening!", 9, "2022-01-23"),
 ("eksempelbruker@gmail.com", 2, "Våren er ikke den samme uten denne!", 8, "2022-03-22"),
 ("eksempelbruker@gmail.com", 5, "En økonomisk givende kaffe som smaker like godt som konkurrentene", 8, "2022-03-01"),
