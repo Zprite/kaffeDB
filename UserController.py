@@ -22,6 +22,20 @@ class UserController :
             print(df , "\n")
         else:
             print("\n------------ Tabbellen er tom ------------\n")
+    
+    # For å printe alle detaljer om en kaffe for brukerhistorie 1
+    def printLongTable(self,tableName,table):
+        if (table != None and len(table[1]) > 0):
+            header = table[0]
+            data = table[1]
+            print(f"\n------------ {tableName} ------------\n")
+            df = pd.DataFrame(data, None, header)
+            df1 = df.iloc[:,[0,1,2,3,4]]
+            df2 = df.iloc[:,[5,6,7,8,9]]
+            df3 = df.iloc[:,[10,11,12]]
+            print(df1, '\n\n', df2, '\n\n', df3, '\n')
+        else:
+            print("\n------------ Tabbellen er tom ------------\n")
 
     def shouldExit(self):
         return self.exit
@@ -49,8 +63,9 @@ class UserController :
                     exit = True
         note = input ("Smaksnotat (beskrivelse på kaffeopplevelsen): ")
         try:
-            # Insert a new review into the database
-            self.kaffeDB.postReview(self.loggedInUser, rating, note, coffeeName, breweryName, breweryLocation)
+            # Insert a new review into the database, use 
+            coffeID = self.kaffeDB.postReview(self.loggedInUser, rating, note, coffeeName, breweryName, breweryLocation)
+            self.printLongTable("Kaffedetaljer",self.kaffeDB.getDetailsFromCoffee(coffeID))
         except Exception as e:
             print("Klarte ikke å oprette kaffesmaking: ", e)
 
@@ -100,6 +115,7 @@ class UserController :
             - søk 
             - filter-søk
             - toppliste
+            - kaffedetaljer
         """)
         elif (str.lower() == "exit"):
             self.exit = True
@@ -130,6 +146,9 @@ class UserController :
             self.printTable("Beste verdi", self.kaffeDB.bestValue())
         elif (str.lower() == "filter-søk"):
             self.filterSearch() 
+        elif (str.lower() == "kaffedetaljer"):
+            coffeID = int(input ("Coffee id: "))
+            self.printLongTable("Kaffedetaljer", self.kaffeDB.getDetailsFromCoffee(coffeID))
         else:
             print("Ugyldig kommando! Bruk 'hjelp' for en liste med kommandoer")
             

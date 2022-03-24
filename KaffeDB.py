@@ -44,6 +44,7 @@ class KaffeDB:
                 self.cursor.execute('INSERT INTO Kaffesmaking VALUES (?, ?, ?, ?, CURRENT_DATE)', (str(email), int(coffeeID), str(note), int(score)))
                 self.connection.commit()
                 print("--- Opretting av kaffesmaking var vellykket! ---")
+                return coffeeID
             else:
                 raise Exception('Denne brukeren har allerede smakt på denne kaffen')
                 
@@ -68,6 +69,23 @@ class KaffeDB:
         INNER JOIN Foredlingsmetode ON (ForedlingsmetodeNavn = Foredlingsmetode.Navn)
         INNER JOIN Gård ON (Kaffeparti.GårdID = Gård.ID)"""
         return(("Navn på Kaffe" ,"Kaffebrenneri", "Land", "Foredlingsmetode"),self.cursor.execute(request).fetchall())
+
+    def getDetailsFromCoffee(self, coffeID):
+        request = """SELECT FerdigbrentKaffe.Navn, FerdigbrentKaffe.Brenningsgrad, Foredlingsmetode.Navn, Kaffebønne.Navn, Kaffebønne.Art, 
+        Gård.Navn, Gård.HøydeOverHavet, Gård.Region, Gård.Land,
+        FerdigbrentKaffe.Kilopris, FerdigbrentKaffe.Beskrivelse,
+        Kaffeparti.Innhøstingsår, Kaffeparti.Betalt
+        FROM FerdigbrentKaffe
+        INNER JOIN Kaffeparti ON (FerdigbrentKaffe.KaffepartiID = Kaffeparti.ID)
+        INNER JOIN Foredlingsmetode ON (Foredlingsmetodenavn = Foredlingsmetode.Navn)
+        INNER JOIN Gård ON (Kaffeparti.GårdID = Gård.ID)
+        INNER JOIN DyrketKaffebønne ON (Kaffeparti.ID = DyrketKaffebønne.KaffepartiID)
+        INNER JOIN Kaffebønne ON (DyrketKaffebønne.Art = Kaffebønne.Art)
+        WHERE FerdigbrentKaffe.ID = ?
+        """
+        return(("Navn" ,"Brenningsgrad", "Foredlingsmetode", "Kaffebønne", 
+        "Art", "Gård", "MOH", "Region", "Land", "Kilopris(kr)", "Beskrivelse", "Inhøstningsår", "Betalt(USD/kg)"),
+        self.cursor.execute(request,(coffeID,)).fetchall())
 
     #Henter alle brukere i kaffesmaking tabellen, sortert etter hvor mange kaffer som brukeren har smakt på
     def topList(self):
